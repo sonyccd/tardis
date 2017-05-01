@@ -58,15 +58,35 @@ christmas = pd.DataFrame({
 
 holidays = pd.concat((newYears, memorialDay, independenceDay, christmas))
 
-df = pd.read_csv('data/stock/SP500-90-00.csv')
-print(df.head())
-m = Prophet(holidays=holidays)
-m.fit(df)
-future = m.make_future_dataframe(periods=1096)
-print(future.tail())
-forecast = m.predict(future)
-print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
-m.plot(forecast)
-for cp in m.changepoints:
-    plt.axvline(cp, c='gray', ls='--', lw=2)
-plt.show()
+df = pd.read_csv('data/stock/SP500-95-12.csv')
+
+
+def find_the_future_nh(data_frame, period):
+    nh_m = Prophet()
+    nh_m.fit(data_frame)
+    nh_future = nh_m.make_future_dataframe(periods=period)
+    nh_forcast = nh_m.predict(nh_future)
+    return nh_forcast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
+
+out = ""
+
+out = out + find_the_future_nh(df, 30)
+out = out + find_the_future_nh(df, 180)
+out = out + find_the_future_nh(df, 360)
+out = out + find_the_future_nh(df, 540)
+out = out + find_the_future_nh(df, 720)
+out = out + find_the_future_nh(df, 900)
+out = out + find_the_future_nh(df, 1080)
+
+print(out)
+
+# m = Prophet(holidays=holidays)
+# m.fit(df)
+# future = m.make_future_dataframe(periods=1096)
+# print(future.tail())
+# forecast = m.predict(future)
+# print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+# m.plot(forecast)
+# for cp in m.changepoints:
+#     plt.axvline(cp, c='gray', ls='--', lw=2)
+# plt.show()
